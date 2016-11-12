@@ -25,7 +25,8 @@ Y = dataset[:,30]
 def create_baseline():
 	# create model
 	model = Sequential()
-	model.add(Dense(8, input_dim=30, init='normal', activation='relu'))
+	model.add(Dense(50, input_dim=30, init='normal', activation='relu'))
+        # model.add(Dense(10, init='normal', activation='relu'))
 	model.add(Dense(1, init='normal', activation='sigmoid'))
 	# Compile model
 	model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
