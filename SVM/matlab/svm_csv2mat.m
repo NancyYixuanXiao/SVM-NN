@@ -26,5 +26,4 @@ for i = 2:569
 end
 feature = [data_m;data_b];
 label = [ones(mcount,1);2*ones(569-mcount,1)];
-disp(sprintf('matrix convertion done'));
 end
