@@ -1,5 +1,5 @@
 function [CCR,prec,recall,fscore] = ...
-    svm_polykernal(feature,label,numoffold,boxconstrain,numofpoly)
+    svm_polykernal(norm_method,feature,label,numoffold,boxconstrain,numofpoly)
 CCR=zeros(1,numofpoly); prec=zeros(1,numofpoly); 
 recall=zeros(1,numofpoly); fscore=zeros(1,numofpoly); 
 CCRi=zeros(1,numoffold); preci=zeros(1,numoffold); 
@@ -10,9 +10,11 @@ for k = 1:numofpoly
         trIdx = c1.training(j);
         xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
         xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
-        svmpara=fitcsvm(xtrain,trainlabel,'CacheSize',1000000,'KernelFunction'...
-            ,'polynomial','BoxConstraint',boxconstrain,'PolynomialOrder',2^(k-11));
-        result=predict(svmpara,xtest);
+        svmpara = svmtrain(xtrain,trainlabel,'autoscale',false,'boxconstrain',...
+        boxconstrain*ones(length(trainlabel),1),'tolkkt',2^-10,'options',...
+        statset('Display','off','MaxIter',10^7),'kernelcachelimit',1000000,...
+        'method',norm_method,'kernel_function','polynomial','polyorder',k);
+        result=svmclassify(svmpara,xtest);
         % performance calculation
         conf=confusionmat(testlabel,result);
         preci(1,j)=conf(1,1)/(conf(1,1)+conf(2,1));

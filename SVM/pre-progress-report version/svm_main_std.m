@@ -5,27 +5,47 @@ clear
 %% enter parameters
 % which kernel model you want to run
 % 1 is linear, 2 is RBF and 3 is polynomial
-model = 1;
+model = 3;
+
+% which regulization method you want to use
+% 1 is L1 morm, 2 is L2 norm
+norm = 1;
 
 % number of k fold
 numoffold = 10; 
 
 % parameters for ALL kernal SVM
-numofvalid = 24; % number of cross validation for C value 
-if numofvalid/4-round(numofvalid/4) ~= 0
-    disp('number of validation must be factor of 4');
-    return
-end
-which_C_to_start = -9; % 2^(which_C_to_start)
+numofvalid = 16; % number of cross validation for C value 
+
+which_C_to_start = -6; % 2^(which_C_to_start), minimum is -9
 startpoint_C = 2^(which_C_to_start); % which boxconstrain to start with
 
 % parameters for RBF kernal SVM
-numofsigma = 24; % number of sigma to cross validate
+numofsigma = 16; % number of sigma to cross validate
 which_Sigma_to_start = -1; % 2^(which_Sigma_to_start)
 startpoint_sigma = 2^(which_Sigma_to_start); % which sigma to start with
 
 % parameters for polynomial kernal SVM
 numofpoly = 10; % start at 2^(1), number of polynomial degree to cross validate
+
+if norm ==1
+    norm_method = 'SMO';
+elseif norm == 2
+        norm_method = 'QP';
+else 
+    disp('please choose between L1 and L2 norm');
+    return
+end
+
+if which_C_to_start < -9
+    disp('C must be greater than 2^-9')
+    return
+end
+
+if numofvalid/4-round(numofvalid/4) ~= 0
+    disp('number of validation must be factor of 4');
+    return
+end
 
 %% linear kernal with k-fold
 if model ==1
@@ -35,10 +55,14 @@ if model ==1
         iter1 = startpoint_C*2^(4*(i-1)); iter2 = startpoint_C*2^(4*(i-1)+1);
         iter3 = startpoint_C*2^(4*(i-1)+2); iter4 = startpoint_C*2^(4*(i-1)+3);
         % parallel cross validating on C
-        [CCR1,prec1,recall1,fscore1] = svm_linearkernal(feature,label,numoffold,iter1);
-        [CCR2,prec2,recall2,fscore2] = svm_linearkernal(feature,label,numoffold,iter2);
-        [CCR3,prec3,recall3,fscore3] = svm_linearkernal(feature,label,numoffold,iter3);
-        [CCR4,prec4,recall4,fscore4] = svm_linearkernal(feature,label,numoffold,iter4);
+        [CCR1,prec1,recall1,fscore1] = svm_linearkernal(norm_method,feature,label,...
+            numoffold,iter1);
+        [CCR2,prec2,recall2,fscore2] = svm_linearkernal(norm_method,feature,label,...
+        numoffold,iter2);
+        [CCR3,prec3,recall3,fscore3] = svm_linearkernal(norm_method,feature,label,...
+        numoffold,iter3);
+        [CCR4,prec4,recall4,fscore4] = svm_linearkernal(norm_method,feature,label,...
+        numoffold,iter4);
         % record result on CCR, precision, recall and f-score
         CCRi= [CCR1 CCR2 CCR3 CCR4]; CCRlin = [CCRlin CCRi];
         preci= [prec1 prec2 prec3 prec4]; preclin = [preclin preci];
@@ -74,14 +98,14 @@ if model == 2
         iter3 = startpoint_C*2^(4*(i-1)+2); iter4 = startpoint_C*2^(4*(i-1)+3);
         % parallel cross validating on C, Sigma validation is in the
         % function itself
-        [CCR1,prec1,recall1,fscore1] = svm_rbfkernal(feature,label,numoffold,iter1,...
-            startpoint_sigma,numofsigma);
-        [CCR2,prec2,recall2,fscore2] = svm_rbfkernal(feature,label,numoffold,iter2,...
-            startpoint_sigma,numofsigma);
-        [CCR3,prec3,recall3,fscore3] = svm_rbfkernal(feature,label,numoffold,iter3,...
-            startpoint_sigma,numofsigma);
-        [CCR4,prec4,recall4,fscore4] = svm_rbfkernal(feature,label,numoffold,iter4,...
-            startpoint_sigma,numofsigma);
+        [CCR1,prec1,recall1,fscore1] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+            iter1,startpoint_sigma,numofsigma);
+        [CCR2,prec2,recall2,fscore2] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+            iter2,startpoint_sigma,numofsigma);
+        [CCR3,prec3,recall3,fscore3] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+            iter3,startpoint_sigma,numofsigma);
+        [CCR4,prec4,recall4,fscore4] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+            iter4,startpoint_sigma,numofsigma);
         % record result on CCR, precision, recall and f-score
         CCRi= [CCR1' CCR2' CCR3' CCR4']; CCRrbf = [CCRrbf CCRi];
         preci= [prec1' prec2' prec3' prec4']; precrbf = [precrbf preci];
@@ -110,28 +134,28 @@ if model == 2
     subplot(2,2,1); hold on; 
     contourf(X,Y,CCRrbf); colorbar; title('CCR');
     ylabel('Sigma = 2^s'); xlabel('C = 2^c');
-    plot(maxC_CCR_sig+which_C_to_start-1,maxsigma_CCR+which_Sigma_to_start-1,...
-        'x','MarkerSize',20); hold off
+%     plot(maxC_CCR_sig+which_C_to_start-1,maxsigma_CCR+which_Sigma_to_start-1,...
+%         'x','MarkerSize',20); hold off
     
     subplot(2,2,2); hold on; 
     contourf(X,Y,precrbf); colorbar; title('precision');
     ylabel('Sigma = 2^s'); xlabel('C = 2^c');
     [~,mm]=find(precrbf(max(maxC_prec_sig),:)==max(precrbf(max(maxC_prec_sig),:)));
-    plot(max(maxC_prec_sig)+which_C_to_start-1,max(mm)+which_Sigma_to_start-1,...
-        'x','MarkerSize',20); hold off
+%     plot(max(maxC_prec_sig)+which_C_to_start-1,max(mm)+which_Sigma_to_start-1,...
+%         'x','MarkerSize',20); hold off
     
     subplot(2,2,3); hold on;
     contourf(X,Y,recallrbf); colorbar; title('recall');
     ylabel('Sigma = 2^s'); xlabel('C = 2^c');
     [mk,~]=find(recallrbf(:,max(maxC_rec_sig))==max(recallrbf(:,max(maxC_rec_sig))));
-    plot(max(maxC_rec_sig)+which_C_to_start-1,min(mk)+which_Sigma_to_start-1,...
-        'x','MarkerSize',20); hold off
+%     plot(max(maxC_rec_sig)+which_C_to_start-1,min(mk)+which_Sigma_to_start-1,...
+%         'x','MarkerSize',20); hold off
     
     subplot(2,2,4); hold on
     contourf(X,Y,fscorerbf); colorbar; title('f-score');
     ylabel('Sigma = 2^s'); xlabel('C = 2^c');
-    plot(maxC_fsc_sig+which_C_to_start-1,maxsigma_fsc+which_Sigma_to_start-1,...
-        'x','MarkerSize',20); hold off
+%     plot(maxC_fsc_sig+which_C_to_start-1,maxsigma_fsc+which_Sigma_to_start-1,...
+%         'x','MarkerSize',20); hold off
 end
 
 %% Polynomial kernal with k-fold
@@ -143,14 +167,14 @@ if model == 3
         iter3 = startpoint_C*2^(4*(i-1)+2); iter4 = startpoint_C*2^(4*(i-1)+3);
         % parallel cross validating on C, poly degree validation is in the
         % function itself
-        [CCR1,prec1,recall1,fscore1] = svm_polykernal(feature,label,numoffold,iter1,...
-            numofpoly)
-        [CCR2,prec2,recall2,fscore2] = svm_polykernal(feature,label,numoffold,iter2,...
-            numofpoly)
-        [CCR3,prec3,recall3,fscore3] = svm_polykernal(feature,label,numoffold,iter3,...
-            numofpoly)
-        [CCR4,prec4,recall4,fscore4] = svm_polykernal(feature,label,numoffold,iter4,...
-            numofpoly)
+        [CCR1,prec1,recall1,fscore1] = svm_polykernal(norm_method,feature,label,numoffold,...
+            iter1,numofpoly)
+        [CCR2,prec2,recall2,fscore2] = svm_polykernal(norm_method,feature,label,numoffold,...
+            iter2,numofpoly)
+        [CCR3,prec3,recall3,fscore3] = svm_polykernal(norm_method,feature,label,numoffold,...
+            iter3,numofpoly)
+        [CCR4,prec4,recall4,fscore4] = svm_polykernal(norm_method,feature,label,numoffold,...
+            iter4,numofpoly)
         CCRi= [CCR1' CCR2' CCR3' CCR4']; CCRpoly = [CCRpoly CCRi];
         preci= [prec1' prec2' prec3' prec4']; precpoly = [precpoly preci];
         recalli= [recall1' recall2' recall3' recall4']; recallpoly = [recallpoly recalli];

@@ -1,4 +1,4 @@
-function [CCR,prec,recall,fscore] = svm_linear_cost(feature,label,numoffold,boxconstrain,fpcost,fncost)
+function [CCR,prec,recall,fscore] = svm_linear_cost(norm_method,feature,label,numoffold,boxconstrain,fpcost,fncost)
 CCRi=zeros(1,numoffold); preci=zeros(1,numoffold); 
 recalli=zeros(1,numoffold); fscorei=zeros(1,numoffold); 
 c1 = cvpartition(label,'KFold',numoffold); % k folding
@@ -7,7 +7,8 @@ for j = 1:numoffold
     xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
     xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
     svmpara=fitcsvm(xtrain,trainlabel,'Cost',[0,fncost;fpcost,0],'CacheSize',...
-        500000,'NumPrint',150000,'KernelFunction','linear','BoxConstraint',boxconstrain);
+        500000,'NumPrint',150000,'KernelFunction','linear','BoxConstraint',boxconstrain...
+        ,'method',norm_method);
     result=predict(svmpara,xtest);
 
     % performance calculation
