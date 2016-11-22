@@ -26,7 +26,7 @@ which_Sigma_to_start = -1; % 2^(which_Sigma_to_start)
 startpoint_sigma = 2^(which_Sigma_to_start); % which sigma to start with
 
 % parameters for polynomial kernal SVM
-numofpoly = 10; % start at 2^(1), number of polynomial degree to cross validate
+numofpoly = 4; % start at 2^(1), number of polynomial degree to cross validate
 
 if norm ==1
     norm_method = 'SMO';
