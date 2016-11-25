@@ -2,34 +2,14 @@ clear
 % preprocessing csv to mat
 [feature,label] = svm_csv2mat();
 
-meanoffeat = mean(feature);
-varoffeat = var(feature);
-
-% SVD, but it is not used in this section, decision pending
-[U,S,V] = svds(feature,15);
-feat_new =U*S*V';
-
-% which regulization method you want to use
-% 1 is L1 morm, 2 is L2 norm
-norm = 1;
-
 % number of k fold
 numoffold = 10; 
 
 % parameters for ALL kernal SVM
-numofvalid = 24; % number of cross validation for C value 
+numofvalid = 4; % number of cross validation for C value 
 
 which_C_to_start = -9; % 2^(which_C_to_start), minimum is -9
 startpoint_C = 2^(which_C_to_start); % which boxconstrain to start with
-
-if norm ==1
-    norm_method = 'SMO';
-elseif norm == 2
-        norm_method = 'QP';
-else 
-    disp('please choose between L1 and L2 norm');
-    return
-end
 
 if which_C_to_start < -9
     disp('C must be greater than 2^-9')
@@ -46,10 +26,10 @@ CCRlin = []; preclin = []; recalllin = []; fscorelin = [];
 parfor i = 1:numofvalid
     iter = startpoint_C*2^(i-1);
     % cross validate on FN cost
-    [CCR1,prec1,recall1,fscore1] = svm_linear_cost(norm_method,feature,label,numoffold,iter,1,1.25);
-    [CCR2,prec2,recall2,fscore2] = svm_linear_cost(norm_method,feature,label,numoffold,iter,1,1.5);
-    [CCR3,prec3,recall3,fscore3] = svm_linear_cost(norm_method,feature,label,numoffold,iter,1,1.75);
-    [CCR4,prec4,recall4,fscore4] = svm_linear_cost(norm_method,feature,label,numoffold,iter,1,2);
+    [CCR1,prec1,recall1,fscore1] = svm_linear_cost(feature,label,numoffold,iter,1,1.25);
+    [CCR2,prec2,recall2,fscore2] = svm_linear_cost(feature,label,numoffold,iter,1,1.5);
+    [CCR3,prec3,recall3,fscore3] = svm_linear_cost(feature,label,numoffold,iter,1,1.75);
+    [CCR4,prec4,recall4,fscore4] = svm_linear_cost(feature,label,numoffold,iter,1,2);
     % record performance matrix
     CCRi= [CCR1; CCR2; CCR3; CCR4]; CCRlin = [CCRlin CCRi];
     preci= [prec1; prec2; prec3; prec4]; preclin = [preclin preci];
