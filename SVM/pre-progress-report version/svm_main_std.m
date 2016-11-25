@@ -5,11 +5,11 @@ clear
 %% enter parameters
 % which kernel model you want to run
 % 1 is linear, 2 is RBF and 3 is polynomial
-model = 3;
+model = 2;
 
 % which regulization method you want to use
 % 1 is L1 morm, 2 is L2 norm
-norm = 1;
+norm = 2;
 
 % number of k fold
 numoffold = 10; 
