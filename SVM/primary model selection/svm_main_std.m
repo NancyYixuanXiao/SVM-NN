@@ -5,19 +5,19 @@ clear
 %% enter parameters
 % which kernel model you want to run
 % 1 is linear, 2 is RBF and 3 is polynomial
-model = 2;
+model = 1;
 
 % which regulization method you want to use
 % 1 is L1 morm, 2 is L2 norm
-norm = 2;
+norm = 1;
 
 % number of k fold
 numoffold = 10; 
 
 % parameters for ALL kernal SVM
-numofvalid = 16; % number of cross validation for C value 
+numofvalid = 4; % number of cross validation for C value 
 
-which_C_to_start = -6; % 2^(which_C_to_start), minimum is -9
+which_C_to_start = 4; % 2^(which_C_to_start), minimum is -9
 startpoint_C = 2^(which_C_to_start); % which boxconstrain to start with
 
 % parameters for RBF kernal SVM
