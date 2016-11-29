@@ -6,13 +6,13 @@ meanoffeat = mean(feature);
 varoffeat = var(feature);
 
 % SVD
-[U,S,V] = svds(feature,15);
+[U,S,V] = svds(feature,25);
 feat_new =U*S*V';
 
 %% enter parameters
 % which kernel model you want to run
 % 1 is linear and 2 is RBF
-model = 1;
+model = 2;
 
 % which regulization method you want to use
 % 1 is L1 morm, 2 is L2 norm
@@ -22,13 +22,13 @@ norm = 2;
 numoffold = 10; 
 
 % parameters for ALL kernal SVM
-numofvalid = 36; % number of cross validation for C value 
-which_C_to_start = -15; % 2^(which_C_to_start), minimum is -9
+numofvalid = 12; % number of cross validation for C value 
+which_C_to_start = 2; % 2^(which_C_to_start), minimum is -9
 startpoint_C = 2^(which_C_to_start); % which boxconstrain to start with
 
 % parameters for RBF kernal SVM
-numofsigma = 24; % number of sigma to cross validate
-which_Sigma_to_start = -1; % 2^(which_Sigma_to_start)
+numofsigma = 12; % number of sigma to cross validate
+which_Sigma_to_start = 3; % 2^(which_Sigma_to_start)
 startpoint_sigma = 2^(which_Sigma_to_start); % which sigma to start with
 
 if norm ==1
@@ -101,13 +101,13 @@ if model == 2
         iter3 = startpoint_C*2^(4*(i-1)+2); iter4 = startpoint_C*2^(4*(i-1)+3);
         % parallel cross validating on C, Sigma validation is in the
         % function itself
-        [CCR1,prec1,recall1,fscore1] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+        [CCR1,prec1,recall1,fscore1] = svm_rbfkernal(norm_method,feat_new,label,numoffold,...
             iter1,startpoint_sigma,numofsigma);
-        [CCR2,prec2,recall2,fscore2] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+        [CCR2,prec2,recall2,fscore2] = svm_rbfkernal(norm_method,feat_new,label,numoffold,...
             iter2,startpoint_sigma,numofsigma);
-        [CCR3,prec3,recall3,fscore3] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+        [CCR3,prec3,recall3,fscore3] = svm_rbfkernal(norm_method,feat_new,label,numoffold,...
             iter3,startpoint_sigma,numofsigma);
-        [CCR4,prec4,recall4,fscore4] = svm_rbfkernal(norm_method,feature,label,numoffold,...
+        [CCR4,prec4,recall4,fscore4] = svm_rbfkernal(norm_method,feat_new,label,numoffold,...
             iter4,startpoint_sigma,numofsigma);
         % record result on CCR, precision, recall and f-score
         CCRi= [CCR1' CCR2' CCR3' CCR4']; CCRrbf = [CCRrbf CCRi];
@@ -137,8 +137,8 @@ if model == 2
     subplot(2,2,1); hold on; 
     contourf(X,Y,CCRrbf); colorbar; title('CCR');
     ylabel('Sigma = 2^s'); xlabel('C = 2^c');
-    plot(maxC_CCR_sig+which_C_to_start-1,maxsigma_CCR+which_Sigma_to_start-1,...
-        'x','MarkerSize',20); hold off
+%     plot(maxC_CCR_sig+which_C_to_start-1,maxsigma_CCR+which_Sigma_to_start-1,...
+%         'x','MarkerSize',20); hold off
     
     subplot(2,2,2); hold on; 
     contourf(X,Y,precrbf); colorbar; title('precision');

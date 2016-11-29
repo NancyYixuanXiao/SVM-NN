@@ -29,6 +29,9 @@ parfor i = 1:8
         [CCR6] = svm_func_1_final('linear','QP',feat_svd_1,label,0,C_lin);
         [CCR7] = svm_func_1_final('linear','QP',feat_svd_2,label,0,C_lin);
         [CCR8] = svm_func_1_final('linear','QP',feat_svd_3,label,0,C_lin);
+        [CCR9] = svm_func_1_final('rbf','QP',feat_svd_1,label,2^6,C_lin);
+        [CCR10] = svm_func_1_final('rbf','QP',feat_svd_2,label,2^8,C_lin);
+        [CCR11] = svm_func_1_final('rbf','QP',feat_svd_3,label,2^10,C_lin);
         CCR_total_1(1,i) = CCR1;
         CCR_total_2(1,i) = CCR2;
         CCR_total_3(1,i) = CCR3;
@@ -37,8 +40,12 @@ parfor i = 1:8
         CCR_total_6(1,i) = CCR6;
         CCR_total_7(1,i) = CCR7;
         CCR_total_8(1,i) = CCR8;
+        CCR_total_9(1,i) = CCR9;
+        CCR_total_10(1,i) = CCR10;
+        CCR_total_11(1,i) = CCR11;
 end
 % row represent model, column represetn parameters
 CCR_total = [CCR_total_1;CCR_total_2;CCR_total_3;CCR_total_4...
-    ;CCR_total_5;CCR_total_6;CCR_total_7;CCR_total_8];
+    ;CCR_total_5;CCR_total_6;CCR_total_7;CCR_total_8;CCR_total_9...
+    ;CCR_total_10;CCR_total_11];
 end
