@@ -5,7 +5,6 @@ function svm_main
 % explain of functions:
 % svm_main: read, preprocess and test data, output CCR plot of models
 % svm_cell2mat: read data from csv files
-% svm_3d_matlab_vis: visualize data for user
 % svm_models: test preprocessed data on 4 SVM models (polynomial and
 %     non-uniform cost model are optional)
 % svm_func: SVM train and testing for models
