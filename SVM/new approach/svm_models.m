@@ -40,7 +40,7 @@ for model = 1:6
         save('model_1.mat','CCR_model_1','ave','maxi','mini');
         saveas(fig1,'model_1.fig');
         
-        disp(sprinf('L1 norm linear kernal complete'));
+        disp(sprintf('L1 norm linear kernal complete'));
     end
     
     %% model 2
@@ -83,7 +83,7 @@ for model = 1:6
         save('model_2.mat','CCR_model_2i','ave','maxi','mini');
         saveas(fig2,'model_2.fig');
         
-        disp(sprinf('L1 norm rbf kernal complete'));
+        disp(sprintf('L1 norm rbf kernal complete'));
     end
     
     %% model 3
@@ -126,7 +126,7 @@ for model = 1:6
         %     save('model_3.mat','CCR_model_3i','ave','maxi','mini');
         %     saveas(fig3,'model_3.fig');
         
-%         disp(sprinf('L1 norm polynomial kernal complete'));
+%         disp(sprintf('L1 norm polynomial kernal complete'));
     end
     
     %% model 4
@@ -157,7 +157,7 @@ for model = 1:6
         %     save('model_4.mat','CCR_model_4','ave','maxi','mini');
         %     saveas(fig4,'model_4.fig');
         
-%         disp(sprinf('L1 norm linear kernal with non-uniform cost complete'));
+%         disp(sprintf('L1 norm linear kernal with non-uniform cost complete'));
     end
     
     %% model 5
@@ -187,7 +187,7 @@ for model = 1:6
         save('model_5.mat','CCR_model_5','ave','maxi','mini');
         saveas(fig5,'model_5.fig');
         
-        disp(sprinf('L2 norm linear kernal complete'));
+        disp(sprintf('L2 norm linear kernal complete'));
     end
     
     %% model 6
@@ -230,7 +230,7 @@ for model = 1:6
         save('model_6.mat','CCR_model_6i','ave','maxi','mini');
         saveas(fig6,'model_6.fig');
         
-        disp(sprinf('L2 norm linear kernal complete'));
+        disp(sprintf('L2 norm linear kernal complete'));
     end
 end
 end
