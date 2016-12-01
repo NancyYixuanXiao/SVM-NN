@@ -13,7 +13,7 @@ clear
 % 8: L1 norm rbf kernal with DR
 % 9: L2 norm linear kernal with DR
 % 10: L2 norm rbf kernal with DR
-model = 1 ; % choose model
+model = 6 ; % choose model
 
 % explain of the svm function
 % [CCR] = svm_func(kfold,kernel,norm_method,pdeg_iter,sigma_iter,c_iter,FNcost...
@@ -61,7 +61,7 @@ if model == 2
     end
     c_iter = repmat(c_iter,[worker 1]); 
     
-    which_sigma_to_start = -7; 
+    which_sigma_to_start = -15; 
     which_sigma_to_end = 7;
     sigma_iter = zeros(1,(which_sigma_to_end-which_sigma_to_start+1));
     for i = 1:(which_sigma_to_end-which_sigma_to_start+1)
@@ -200,7 +200,7 @@ if model == 6
     end
     c_iter = repmat(c_iter,[worker 1]); 
     
-    which_sigma_to_start = -7; 
+    which_sigma_to_start = -15; 
     which_sigma_to_end = 7;
     sigma_iter = zeros(1,(which_sigma_to_end-which_sigma_to_start+1));
     for i = 1:(which_sigma_to_end-which_sigma_to_start+1)
