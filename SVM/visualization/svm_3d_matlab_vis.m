@@ -1,20 +1,50 @@
-function [CCR] = svm_3d_matlab_vis(U,label)
-fig1 = figure;
-plot3(U(label==2,1),U(label==2,2),U(label==2,3),'r.','MarkerSize',12); hold on
-plot3(U(label==1,1),U(label==1,2),U(label==1,3),'b.','MarkerSize',12);
+function [CCR,xtrain,trainlabel,xtest,result] = svm_pred(kernel,norm_method,sigma,C,feature,label)
 
 
-c1 = cvpartition(label,'KFold',3); % k folding
-trIdx = c1.training(1);
-xtrain=U(trIdx==1,:); trainlabel=label(trIdx==1,:);
-xtest=U(trIdx==0,:); testlabel=label(trIdx==0,:);
-svmStruct = svmtrain(xtrain,trainlabel,'showplot','false','kernel_function','rbf',...
-      'boxconstraint',1024,'kktviolationlevel',0.05,'tolkkt',5e-3,'method','QP','rbf_sigma',0.5);
-result=svmclassify(svmStruct,xtest);
-CCR=length(find((testlabel-result)==0))/length(testlabel);
+% warning('off','all')
+c1 = cvpartition(label,'KFold',3); 
 
-trainlabel = num2cell(trainlabel);
+if strcmp(kernel,'rbf') == 1
+    trIdx = c1.training(1);
+    feature = bsxfun(@minus,feature,mean(feature));
+    xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
+    xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
+    coef = pca(xtrain);
+    xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
+    svmStruct=svmtrain(xtrain,trainlabel,'showplot','false','kernel_function',kernel,...
+      'boxconstraint',C,'kktviolationlevel',0.05,'tolkkt',5e-3,'method',norm_method...
+      ,'rbf_sigma',sigma);
+    result=svmclassify(svmStruct,xtest);
+    plot3(xtest(result==2,1),xtest(result==2,2),xtest(result==2,3),'r.','MarkerSize',12); hold on
+    plot3(xtest(result==1,1),xtest(result==1,2),xtest(result==1,3),'b.','MarkerSize',12);
+    
+    CCR=length(find((testlabel-result)==0))/length(testlabel);
+end
 
+if strcmp(kernel,'linear') == 1
+    trIdx = c1.training(1);
+    feature = bsxfun(@minus,feature,mean(feature));
+    xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
+    xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
+    coef = pca(xtrain);
+    xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
+    svmStruct=svmtrain(xtrain,trainlabel,'showplot','false','kernel_function',kernel,...
+      'boxconstraint',C,'kktviolationlevel',0.05,'tolkkt',5e-3,'method',norm_method...
+      ,'rbf_sigma',sigma);
+    result=svmclassify(svmStruct,xtest);
+    
+    plot3(xtest(result==2,1),xtest(result==2,2),xtest(result==2,3),'r.','MarkerSize',12); hold on
+    plot3(xtest(result==1,1),xtest(result==1,2),xtest(result==1,3),'b.','MarkerSize',12);
+    
+    CCR=length(find((testlabel-result)==0))/length(testlabel);
+end
+
+
+
+
+
+
+%% ploting
 sv =  svmStruct.SupportVectors;
 alphaHat = svmStruct.Alpha;
 bias = svmStruct.Bias;
@@ -23,11 +53,7 @@ kfunargs = svmStruct.KernelFunctionArgs;
 sh = svmStruct.ScaleData.shift; % shift vector
 scalef = svmStruct.ScaleData.scaleFactor; % scale vector
 
-trainlabel = trainlabel(~any(isnan(xtrain),2));
-xtrain =xtrain(~any(isnan(xtrain),2),:); % remove rows with NaN 
-
 % scale and shift data
-xtrain1 = repmat(scalef,size(xtrain,1),1).*(xtrain+repmat(sh,size(xtrain,1),1));
 k = 50; 
 cubeXMin = min(xtrain1(:,1));
 cubeYMin = min(xtrain1(:,2));
@@ -45,26 +71,18 @@ x = x(:);
 y = y(:);
 z = z(:);
 f = (feval(kfun,sv,[x y z],kfunargs{:})'*alphaHat(:)) + bias;
-t = strcmp(trainlabel, trainlabel{1});
 
 % unscale and unshift data 
-xtrain1 =(xtrain1./repmat(scalef,size(xtrain,1),1)) - repmat(sh,size(xtrain,1),1);
 x =(x./repmat(scalef(1),size(x,1),1)) - repmat(sh(1),size(x,1),1);
 y =(y./repmat(scalef(2),size(y,1),1)) - repmat(sh(2),size(y,1),1);
 z =(z./repmat(scalef(3),size(z,1),1)) - repmat(sh(3),size(z,1),1);
-
-
-% % load unscaled support vectors for plotting
-% sv = svmStruct.SupportVectorIndices;
-% sv = [xtrain1(sv, :)];
-% plot3(sv(:, 1), sv(:, 2), sv(:, 3), 'go');
 
 x0 = reshape(x, mm);
 y0 = reshape(y, mm);
 z0 = reshape(z, mm);
 v0 = reshape(f, mm);
 
-[faces,verts,colors] = isosurface(x0, y0, z0, v0, 0, x0);
+[faces,verts,~] = isosurface(x0, y0, z0, v0, 0, x0);
 patch('Vertices', verts, 'Faces', faces, 'FaceColor','k','edgecolor', 'none', 'FaceAlpha', 0.5);
 grid on
 box on
