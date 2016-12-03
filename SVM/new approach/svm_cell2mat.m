@@ -26,7 +26,7 @@ if setop == 1
         end
     end
     
-    label = [ones(mcount,1);2*ones(569-mcount,1)];
+    label = [ones(mcount,1);zeros(569-mcount,1)];
     if corefeat == 0
         if noli == 0
             feature = [data_m;data_b];
@@ -73,7 +73,7 @@ if setop == 2
         end
     end
     
-    label = [ones(mcount,1);2*ones(155-mcount,1)];
+    label = [ones(mcount,1);zeros(155-mcount,1)];
     if corefeat == 0
         if noli == 0
             feature = [data_m;data_b];
