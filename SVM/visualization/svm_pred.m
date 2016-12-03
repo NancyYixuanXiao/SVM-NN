@@ -15,8 +15,14 @@ if strcmp(kernel,'rbf') == 1
       'boxconstraint',C,'kktviolationlevel',0.05,'tolkkt',5e-3,'method',norm_method...
       ,'rbf_sigma',sigma);
     result=svmclassify(svmStruct,xtest);
+    fig1=figure;
     plot3(xtrain(trainlabel==2,1),xtrain(trainlabel==2,2),xtrain(trainlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtrain(trainlabel==1,1),xtrain(trainlabel==1,2),xtrain(trainlabel==1,3),'b.','MarkerSize',12);
+    svm_3d_vis(svmStruct,xtrain,trainlabel)
+    fig2=figure;
+    plot3(xtest(testlabel==2,1),xtest(testlabel==2,2),xtest(testlabel==2,3),'r.','MarkerSize',12); hold on
+    plot3(xtest(testlabel==1,1),xtest(testlabel==1,2),xtest(testlabel==1,3),'b.','MarkerSize',12);
+    svm_3d_vis(svmStruct,xtest,testlabel)
     
     CCR=length(find((testlabel-result)==0))/length(testlabel);
 end
@@ -33,8 +39,14 @@ if strcmp(kernel,'linear') == 1
       ,'rbf_sigma',sigma);
     result=svmclassify(svmStruct,xtest);
     
+    fig1=figure;
     plot3(xtrain(trainlabel==2,1),xtrain(trainlabel==2,2),xtrain(trainlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtrain(trainlabel==1,1),xtrain(trainlabel==1,2),xtrain(trainlabel==1,3),'b.','MarkerSize',12);
+    svm_3d_vis(svmStruct,xtrain,trainlabel)
+    fig2=figure;
+    plot3(xtest(testlabel==2,1),xtest(testlabel==2,2),xtest(testlabel==2,3),'r.','MarkerSize',12); hold on
+    plot3(xtest(testlabel==1,1),xtest(testlabel==1,2),xtest(testlabel==1,3),'b.','MarkerSize',12);
+    svm_3d_vis(svmStruct,xtest,testlabel)
     
     CCR=length(find((testlabel-result)==0))/length(testlabel);
 end
