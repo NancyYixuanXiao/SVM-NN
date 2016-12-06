@@ -3,6 +3,7 @@ function [CCR,recall] = svm_train_test(featrd,kfold,kernel,norm_method,...
 warning('off','all')
 c1 = cvpartition(label,'KFold',kfold); 
 
+%% rbf kernel
 if strcmp(kernel,'rbf') == 1
     CCR = zeros(length(sigma_iter),length(c_iter));
     CCRi=zeros(1,kfold);
@@ -24,8 +25,10 @@ if strcmp(kernel,'rbf') == 1
                 xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
                 xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
                 if featrd == 1
-                    coef = pca(xtrain); 
-                    xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
+                [V,~]=eig(xtrain'*xtrain);
+                xtrain=xtrain*V(:,1:15); xtest=xtest*V(:,1:15); % change num of feature you wanna use
+%                 coef = pca(xtrain); 
+%                 xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
                 end
                 svmpara=svmtrain(xtrain,trainlabel,'autoscale',false,'boxconstrain',...
                     C,'kernel_function',kernel,'tolkkt',2^-14,'options',...
@@ -44,9 +47,11 @@ if strcmp(kernel,'rbf') == 1
             recall(i,k)=mean(recalli);
 %             fscore(i,k)=mean(fscorei);
         end
+        i
     end    
 end
 
+%% polynomial kernel
 % if strcmp(kernel,'polynomial') == 1
 %     CCR = zeros(length(pdeg_iter),length(c_iter));
 %     CCRi=zeros(1,kfold);
@@ -78,6 +83,7 @@ end
 %     end    
 % end
 
+%% linear kernel
 if strcmp(kernel,'linear') == 1
     CCRi=zeros(1,kfold); CCR = zeros(1,length(c_iter));
     precision = zeros(1,length(c_iter));
@@ -94,8 +100,10 @@ if strcmp(kernel,'linear') == 1
             xtrain=feature(trIdx==1,:); trainlabel=label(trIdx==1,:);
             xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
             if featrd == 1
-                coef = pca(xtrain); 
-                xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
+                [V,~]=eig(xtrain'*xtrain);
+                xtrain=xtrain*V(:,1:25); xtest=xtest*V(:,1:25); % change num of feature you wanna use
+%                 coef = pca(xtrain); 
+%                 xtrain = xtrain*coef(:,1:23); xtest = xtest*coef(:,1:23);
             end
 %             if strcmp(norm_method,'QP') == 1
 %             svmpara=svmtrain(xtrain,trainlabel,'autoscale',false,'boxconstrain',...
@@ -120,6 +128,7 @@ if strcmp(kernel,'linear') == 1
         recall(1,k)=mean(recalli);
 %         fscore(1,k)=mean(fscorei);
     end
+    k
 end
 
 end

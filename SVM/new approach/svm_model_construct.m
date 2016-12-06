@@ -2,19 +2,19 @@ function svm_model_construct(feature,label,featrd)
 % all models
 % 1: L1 norm linear kernal
 % 2: L1 norm rbf kernal
-% 3: L1 norm polynomial kernal
-% 4: L1 norm non-unicost linear kernel
+% 3: L1 norm polynomial kernal (optional)
+% 4: L1 norm non-unicost linear kernel (optional)
 % 5: L2 norm linear kernal
 % 6: L2 norm rbf kernal
 
-kfold = 3;
+kfold = 5;
 worker = 4; % set times of repeat
 
 for model = 1:6
     %% model 1
     if model == 1
-        which_C_to_start = -5;
-        which_C_to_end = 15;
+        which_C_to_start = -3;
+        which_C_to_end = 10;
         c_iter = zeros(1,(which_C_to_end-which_C_to_start+1));
         for i = 1:(which_C_to_end-which_C_to_start+1)
             c_iter(1,i) = 2^(which_C_to_start+i-1);
@@ -59,8 +59,8 @@ for model = 1:6
         end
         c_iter = repmat(c_iter,[worker 1]);
         
-        which_sigma_to_start = -7;
-        which_sigma_to_end = 7;
+        which_sigma_to_start = -13;
+        which_sigma_to_end = 5;
         sigma_iter = zeros(1,(which_sigma_to_end-which_sigma_to_start+1));
         for i = 1:(which_sigma_to_end-which_sigma_to_start+1)
             sigma_iter(1,i) = 2^(which_sigma_to_start+i-1);

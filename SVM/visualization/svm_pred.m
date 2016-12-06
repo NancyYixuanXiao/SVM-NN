@@ -1,7 +1,7 @@
 function [CCR,svmStruct,xtrain,trainlabel,xtest,testlabel] = svm_pred(kernel,norm_method,sigma,C,feature,label)
 
 
-% warning('off','all')
+warning('off','all')
 c1 = cvpartition(label,'KFold',3); 
 
 if strcmp(kernel,'rbf') == 1
@@ -18,12 +18,12 @@ if strcmp(kernel,'rbf') == 1
     fig1=figure;
     plot3(xtrain(trainlabel==2,1),xtrain(trainlabel==2,2),xtrain(trainlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtrain(trainlabel==1,1),xtrain(trainlabel==1,2),xtrain(trainlabel==1,3),'b.','MarkerSize',12);
-    svm_3d_vis(svmStruct,xtrain,trainlabel)
+    svm_3d_vis(svmStruct,xtrain,trainlabel,1)
     axis([-1 2 -1 1 -0.5 1]); legend('positive','negative');
     fig2=figure;
     plot3(xtest(testlabel==2,1),xtest(testlabel==2,2),xtest(testlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtest(testlabel==1,1),xtest(testlabel==1,2),xtest(testlabel==1,3),'b.','MarkerSize',12);
-    svm_3d_vis(svmStruct,xtest,testlabel)
+    svm_3d_vis(svmStruct,xtest,testlabel,0)
     axis([-1 2 -1 1 -0.5 1]); legend('positive','negative');
     
     CCR=length(find((testlabel-result)==0))/length(testlabel);
@@ -44,12 +44,12 @@ if strcmp(kernel,'linear') == 1
     fig1=figure;
     plot3(xtrain(trainlabel==2,1),xtrain(trainlabel==2,2),xtrain(trainlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtrain(trainlabel==1,1),xtrain(trainlabel==1,2),xtrain(trainlabel==1,3),'b.','MarkerSize',12);
-%     svm_3d_vis(svmStruct,xtrain,trainlabel,1)
+    svm_3d_vis(svmStruct,xtrain,trainlabel,1)
     axis([-1 2 -1 1 -0.5 1]); legend('positive','negative');
     fig2=figure;
     plot3(xtest(testlabel==2,1),xtest(testlabel==2,2),xtest(testlabel==2,3),'r.','MarkerSize',12); hold on
     plot3(xtest(testlabel==1,1),xtest(testlabel==1,2),xtest(testlabel==1,3),'b.','MarkerSize',12);
-%     svm_3d_vis(svmStruct,xtest,testlabel,0)
+    svm_3d_vis(svmStruct,xtest,testlabel,0)
     axis([-1 2 -1 1 -0.5 1]); legend('positive','negative');
     
     CCR=length(find((testlabel-result)==0))/length(testlabel);
