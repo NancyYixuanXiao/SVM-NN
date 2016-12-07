@@ -26,7 +26,8 @@ if strcmp(kernel,'rbf') == 1
                 xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
                 if featrd == 1
                 [V,~]=eig(xtrain'*xtrain);
-                xtrain=xtrain*V(:,1:15); xtest=xtest*V(:,1:15); % change num of feature you wanna use
+                xtraint=xtrain*V; xtrain=xtraint(:,end-4:end); 
+                xtestt=xtest*V; xtest=xtestt(:,end-4:end); % change num of feature you wanna use
 %                 coef = pca(xtrain); 
 %                 xtrain = xtrain*coef(:,1:3); xtest = xtest*coef(:,1:3);
                 end
@@ -101,7 +102,8 @@ if strcmp(kernel,'linear') == 1
             xtest=feature(trIdx==0,:); testlabel=label(trIdx==0,:);
             if featrd == 1
                 [V,~]=eig(xtrain'*xtrain);
-                xtrain=xtrain*V(:,1:25); xtest=xtest*V(:,1:25); % change num of feature you wanna use
+                xtraint=xtrain*V; xtrain=xtraint(:,end-4:end); 
+                xtestt=xtest*V; xtest=xtestt(:,end-4:end); % change num of feature you wanna use
 %                 coef = pca(xtrain); 
 %                 xtrain = xtrain*coef(:,1:23); xtest = xtest*coef(:,1:23);
             end

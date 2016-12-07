@@ -1,6 +1,6 @@
 clear
 % [feature,label] = svm_cell2mat(noli,setop,corefeat);
-[feature,label] = svm_cell2mat(1,1,0);
+[feature,label] = svm_cell2mat(1,2,0);
 
 % % plot correlation coefficient
 % corcoef = corrcoef(feature);
@@ -9,7 +9,7 @@ clear
 % scatter(x,y,'r','LineWidth',1.5); hold off
 
 % plot 3d data points with hyper plane
-[CCR,svmStruct,xtrain,trainlabel,xtest,result] = svm_pred('linear','SMO',2,1,feature,label);
+[CCR,svmStruct,xtrain,trainlabel,xtest,result] = svm_pred('rbf','SMO',0.125,2^(0),feature,label);
 legend('positive','negative'); title(sprintf('CCR is %d',CCR));
 
 % % plot distribution of data

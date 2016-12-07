@@ -8,13 +8,13 @@ function svm_model_construct(feature,label,featrd)
 % 6: L2 norm rbf kernal
 
 kfold = 5;
-worker = 4; % set times of repeat
+worker = 12; % set times of repeat
 
 for model = 1:6
     %% model 1
     if model == 1
-        which_C_to_start = -3;
-        which_C_to_end = 10;
+        which_C_to_start = -5;
+        which_C_to_end = 15;
         c_iter = zeros(1,(which_C_to_end-which_C_to_start+1));
         for i = 1:(which_C_to_end-which_C_to_start+1)
             c_iter(1,i) = 2^(which_C_to_start+i-1);
@@ -59,7 +59,7 @@ for model = 1:6
         end
         c_iter = repmat(c_iter,[worker 1]);
         
-        which_sigma_to_start = -13;
+        which_sigma_to_start = -10;
         which_sigma_to_end = 5;
         sigma_iter = zeros(1,(which_sigma_to_end-which_sigma_to_start+1));
         for i = 1:(which_sigma_to_end-which_sigma_to_start+1)
@@ -86,13 +86,15 @@ for model = 1:6
         
         fig21 = figure;
         [X,Y] = meshgrid(which_sigma_to_start:which_sigma_to_end, which_C_to_start:which_C_to_end);
-        mesh(X',Y',CCR_ave); hold on;
-        mesh(X',Y',CCR_maxi); mesh(X',Y',CCR_mini); hold off
+        mesh(X',Y',CCR_ave); 
+%         hold on;
+%         mesh(X',Y',CCR_maxi); mesh(X',Y',CCR_mini); hold off
         xlabel('Sigma = 2^s'); ylabel('C = 2^c'); zlabel('CCR'); title('L1 norm rbf kernal');
         fig22 = figure;
         [X,Y] = meshgrid(which_sigma_to_start:which_sigma_to_end, which_C_to_start:which_C_to_end);
-        mesh(X',Y',recall_ave); hold on;
-        mesh(X',Y',recall_maxi); mesh(X',Y',recall_mini); hold off
+        mesh(X',Y',recall_ave); 
+%         hold on;
+%         mesh(X',Y',recall_maxi); mesh(X',Y',recall_mini); hold off
         xlabel('Sigma = 2^s'); ylabel('C = 2^c'); zlabel('recall'); title('L1 norm rbf kernal');
         
         save('model_2.mat','CCR_model_2i','CCR_ave','CCR_maxi','CCR_mini'...
@@ -149,8 +151,8 @@ for model = 1:6
         end
         c_iter = repmat(c_iter,[worker 1]);
         
-        which_sigma_to_start = -7;
-        which_sigma_to_end = 7;
+        which_sigma_to_start = -10;
+        which_sigma_to_end = 5;
         sigma_iter = zeros(1,(which_sigma_to_end-which_sigma_to_start+1));
         for i = 1:(which_sigma_to_end-which_sigma_to_start+1)
             sigma_iter(1,i) = 2^(which_sigma_to_start+i-1);
@@ -176,13 +178,15 @@ for model = 1:6
         
         fig61 = figure;
         [X,Y] = meshgrid(which_sigma_to_start:which_sigma_to_end, which_C_to_start:which_C_to_end);
-        mesh(X',Y',CCR_ave); hold on;
-        mesh(X',Y',CCR_maxi); mesh(X',Y',CCR_mini); hold off
+        mesh(X',Y',CCR_ave); 
+%         hold on;
+%         mesh(X',Y',CCR_maxi); mesh(X',Y',CCR_mini); hold off
         xlabel('Sigma = 2^s'); ylabel('C = 2^c'); zlabel('CCR'); title('L2 norm rbf kernal');
         fig62 = figure;
         [X,Y] = meshgrid(which_sigma_to_start:which_sigma_to_end, which_C_to_start:which_C_to_end);
-        mesh(X',Y',recall_ave); hold on;
-        mesh(X',Y',recall_maxi); mesh(X',Y',recall_mini); hold off
+        mesh(X',Y',recall_ave); 
+%         hold on;
+%         mesh(X',Y',recall_maxi); mesh(X',Y',recall_mini); hold off
         xlabel('Sigma = 2^s'); ylabel('C = 2^c'); zlabel('recall'); title('L2 norm rbf kernal');
         
         save('model_6.mat','CCR_model_6i','CCR_ave','CCR_maxi','CCR_mini'...
