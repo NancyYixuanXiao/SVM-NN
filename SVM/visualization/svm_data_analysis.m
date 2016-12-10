@@ -1,6 +1,6 @@
 clear
 % [feature,label] = svm_cell2mat(noli,setop,corefeat);
-[feature,label] = svm_cell2mat(1,2,0);
+[feature,label] = svm_cell2mat(1,1,0);
 
 % % plot correlation coefficient
 % corcoef = corrcoef(feature);
